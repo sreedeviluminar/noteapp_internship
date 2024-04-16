@@ -79,35 +79,41 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                             width: 20,
                           ),
                           CircleAvatar(
+                            backgroundColor: AppColor.basicTheme,
                             child: IconButton(
                                 onPressed: () {},
                                 icon: Icon(
                                   Icons.add,
-                                  color: AppColor.basicTheme,
+                                  color: AppColor.headTextTheme,
                                 )),
                           )
-                        ],
-                      ),
-                    ],
-                  ),
-               ElevatedButton.icon(
-                   style: ElevatedButton.styleFrom(
-                       backgroundColor: AppColor.basicTheme),
-                   onPressed: () {},
-                   icon: Icon(
-                     Icons.note_add_outlined,
-                     size: 20,
-                     color: AppColor.headTextTheme,
-                   ),
-                   label: Text(
-                     "Add Note",
-                     style: AppTextTheme.appBarTextStyle,
-                   ))
-              ],
+                          ],
+                        ),
+                      ],
+                    ),
+                ],
+              ),
             ),
           ),
         ),
-      ),
+        floatingActionButton: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: FloatingActionButton.extended(
+            backgroundColor: AppColor.basicTheme,
+            onPressed: () {},
+            label: Text(
+              "Add Note",
+              style: AppTextTheme.appBarTextStyle,
+            ),
+            icon: Icon(
+              Icons.note_add_outlined,
+              size: 20,
+              color: AppColor.headTextTheme,
+            ),
+          ),
+        ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+
     );
   }
 }
