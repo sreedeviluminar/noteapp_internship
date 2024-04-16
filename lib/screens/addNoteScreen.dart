@@ -88,21 +88,21 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                           )
                         ],
                       ),
-                      ElevatedButton.icon(
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColor.basicTheme),
-                          onPressed: () {},
-                          icon: Icon(
-                            Icons.note_add_outlined,
-                            size: 20,
-                            color: AppColor.headTextTheme,
-                          ),
-                          label: Text(
-                            "Add Note",
-                            style: AppTextTheme.appBarTextStyle,
-                          ))
                     ],
-                  )
+                  ),
+               ElevatedButton.icon(
+                   style: ElevatedButton.styleFrom(
+                       backgroundColor: AppColor.basicTheme),
+                   onPressed: () {},
+                   icon: Icon(
+                     Icons.note_add_outlined,
+                     size: 20,
+                     color: AppColor.headTextTheme,
+                   ),
+                   label: Text(
+                     "Add Note",
+                     style: AppTextTheme.appBarTextStyle,
+                   ))
               ],
             ),
           ),
