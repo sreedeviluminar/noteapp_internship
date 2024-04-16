@@ -9,4 +9,7 @@ class AppTextTheme {
       fontWeight: FontWeight.bold, fontSize: 20, color: AppColor.headTextTheme);
   static TextStyle subTitleTextStyle = GoogleFonts.quicksand(
       fontStyle: FontStyle.italic, fontSize: 15, color: AppColor.contentColor);
+
+  static TextStyle bodyTextStyle = GoogleFonts.quicksand(
+      fontWeight: FontWeight.bold, fontSize: 22, color: AppColor.bodyTextColor);
 }

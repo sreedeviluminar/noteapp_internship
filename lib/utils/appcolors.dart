@@ -5,4 +5,6 @@ class AppColor{
   static Color? secondaryTheme = const Color(0xAB51B7EE);
   static Color? headTextTheme  = Colors.white;
   static Color? contentColor   = Colors.grey[600];
+  static Color? bodyTextColor   = Colors.green[500];
+
 }
