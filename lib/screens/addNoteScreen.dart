@@ -107,7 +107,10 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                           CircleAvatar(
                             backgroundColor: AppColor.basicTheme,
                             child: IconButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  ///fetch value from add item controller
+                                  _addCheckListItem(_addItemController.text);
+                                },
                                 icon: Icon(
                                   Icons.add,
                                   color: AppColor.headTextTheme,
@@ -117,6 +120,29 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                       ),
                     ],
                   ),
+                ListView.builder(
+                    shrinkWrap: true,
+                    /// total length of list
+                    itemCount: checkListItems.length,
+                    itemBuilder: (context, index) {
+                      ///each item in the list stored in 'item'
+                      final item = checkListItems[index];
+                      return ListTile(
+                        title: Text(item,style: AppTextTheme.bodyTextStyle,),
+                        trailing: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                checkListItems.removeAt(index);
+                                _isChecked.removeAt(index);
+                              });
+                            },
+                            icon: Icon(
+                              size: 25,
+                              Icons.delete,
+                              color: AppColor.basicTheme,
+                            )),
+                      );
+                    })
               ],
             ),
           ),
@@ -146,5 +172,18 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
+  }
+
+  void _addCheckListItem(String checkListItem) {
+    setState(() {
+      if (checkListItem.trim().isNotEmpty) {
+        ///add the value that we entered in add item field to the list
+        checkListItems.add(checkListItem.trim());
+        _isChecked.add(false);
+
+        ///clear textfield after adding an item
+        _addItemController.clear();
+      }
+    });
   }
 }
