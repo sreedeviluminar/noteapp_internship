@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:noteapp_internship/screens/home_note.dart';
+import 'package:noteapp_internship/model/note.dart';
 import 'package:noteapp_internship/utils/appcolors.dart';
+import 'package:noteapp_internship/utils/snackbar.dart';
 
+import '../database/db.dart';
 import '../utils/textConstants.dart';
 
 class AddNoteScreen extends StatefulWidget {
@@ -155,9 +157,34 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
           onPressed: () {
             var valid = formkey.currentState!.validate();
             if (valid == true) {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => NoteHome()));
+              ///read all the datas from fileds and store it to title content checklist and ischecked
+              String title = _titleController.text;
+              String content = _contentController.text;
+              final checklist =
+                  checkListItems.isNotEmpty ? checkListItems : null;
+              final checked = _isChecked.isNotEmpty ? _isChecked : null;
+
+              /// pass the data from ui to model
+              final note = Note(
+                  title: title,
+                  content: content,
+                  checkList: checklist,
+                  isCheckedList: checked);
+
+              /// add note to hive db
+              final id = HiveDb.addNote(note);
+
+              if (id != null) {
+                successSnackBar(context);
+                Navigator.pop(context);
+              }else{
+                errorSnackBar(context);
+              }
+            } else {
+              warningSnackBar(context);
             }
+            _titleController.clear();
+            _contentController.clear();
           },
           label: Text(
             "Add Note",
