@@ -3,13 +3,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:noteapp_internship/utils/appcolors.dart';
 
 class AppTextTheme {
-  static TextStyle appBarTextStyle = GoogleFonts.kanit(
+  static TextStyle appBarTextStyle = GoogleFonts.aBeeZee(
       fontWeight: FontWeight.bold, fontSize: 30, color: AppColor.headTextTheme);
-  static TextStyle titleTextStyle = GoogleFonts.quicksand(
-      fontWeight: FontWeight.bold, fontSize: 20, color: AppColor.headTextTheme);
-  static TextStyle subTitleTextStyle = GoogleFonts.quicksand(
+  static TextStyle titleTextStyle = GoogleFonts.aBeeZee(
+      fontWeight: FontWeight.bold, fontSize: 25, color: AppColor.headTextTheme);
+  static TextStyle subTitleTextStyle = GoogleFonts.aBeeZee(
       fontStyle: FontStyle.italic, fontSize: 15, color: AppColor.contentColor);
-
-  static TextStyle bodyTextStyle = GoogleFonts.quicksand(
+  static TextStyle checkTextStyle = GoogleFonts.aBeeZee(
+      fontWeight: FontWeight.bold, fontSize: 22, color: AppColor.bodyTextColor);
+  static TextStyle bodyTextStyle = GoogleFonts.aBeeZee(
       fontWeight: FontWeight.bold, fontSize: 22, color: AppColor.bodyTextColor);
 }

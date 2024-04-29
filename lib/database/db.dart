@@ -11,4 +11,6 @@ class HiveDb {
     int id = await Hive.box<Note>('my_notes').add(note);
     return id;
   }
+
+
 }
