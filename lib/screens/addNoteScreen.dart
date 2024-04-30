@@ -2,38 +2,50 @@ import 'package:flutter/material.dart';
 import 'package:noteapp_internship/model/note.dart';
 import 'package:noteapp_internship/utils/appcolors.dart';
 import 'package:noteapp_internship/utils/snackbar.dart';
-
 import '../database/db.dart';
 import '../utils/textConstants.dart';
 
 class AddNoteScreen extends StatefulWidget {
-  /// create a initial state or mutable state of this screen
+  final Note? note;
+
+  AddNoteScreen({Key? key, this.note}) : super(key: key);
+
   @override
   State<AddNoteScreen> createState() => _AddNoteScreenState();
 }
 
 class _AddNoteScreenState extends State<AddNoteScreen> {
-  ///used to fetch values from textfield
   TextEditingController _titleController = TextEditingController();
   TextEditingController _contentController = TextEditingController();
   TextEditingController _addItemController = TextEditingController();
 
-  ///list is to store data from add item field as list
   List<String> checkListItems = [];
-
-  /// to fetch state of checklist item
   List<bool> _isChecked = [];
   bool isCheckListEnabled = false;
-
-  ///to monitor the state of this form which is valid or not
   var formkey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.note != null) {
+      _titleController.text = widget.note!.title ?? '';
+      _contentController.text = widget.note!.content ?? '';
+      if (widget.note!.checkList != null) {
+        checkListItems.addAll(widget.note!.checkList!);
+        _isChecked = List<bool>.filled(widget.note!.checkList!.length, false);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColor.basicTheme,
-        title: Text("Add Your Notes", style: AppTextTheme.appBarTextStyle),
+        title: Text(
+          widget.note == null ? 'Add Your Notes' : 'Edit Your Note',
+          style: AppTextTheme.appBarTextStyle,
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -57,8 +69,9 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                   },
                   controller: _titleController,
                   decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: "Enter your Title"),
+                    border: OutlineInputBorder(),
+                    hintText: "Enter your Title",
+                  ),
                 ),
                 const SizedBox(
                   height: 20,
@@ -71,22 +84,24 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                   controller: _contentController,
                   maxLines: 8,
                   decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: "Enter your Content"),
+                    border: OutlineInputBorder(),
+                    hintText: "Enter your Content",
+                  ),
                 ),
                 Row(
                   children: [
                     Checkbox(
-                        value: isCheckListEnabled,
-                        onChanged: (value) {
-                          setState(() {
-                            isCheckListEnabled = value!;
-                          });
-                        }),
+                      value: isCheckListEnabled,
+                      onChanged: (value) {
+                        setState(() {
+                          isCheckListEnabled = value!;
+                        });
+                      },
+                    ),
                     Text(
                       "Create CheckList",
                       style: AppTextTheme.bodyTextStyle,
-                    )
+                    ),
                   ],
                 ),
                 if (isCheckListEnabled == true)
@@ -99,8 +114,9 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                             child: TextField(
                               controller: _addItemController,
                               decoration: const InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  hintText: "Add Item"),
+                                border: OutlineInputBorder(),
+                                hintText: "Add Item",
+                              ),
                             ),
                           ),
                           const SizedBox(
@@ -109,42 +125,58 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                           CircleAvatar(
                             backgroundColor: AppColor.basicTheme,
                             child: IconButton(
-                                onPressed: () {
-                                  ///fetch value from add item controller
-                                  _addCheckListItem(_addItemController.text);
-                                },
-                                icon: Icon(
-                                  Icons.add,
-                                  color: AppColor.headTextTheme,
-                                )),
-                          )
+                              onPressed: () {
+                                _addCheckListItem(_addItemController.text);
+                                _addItemController.clear();
+                              },
+                              icon: Icon(
+                                Icons.add,
+                                color: AppColor.headTextTheme,
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ],
                   ),
                 ListView.builder(
-                    shrinkWrap: true,
-                    /// total length of list
-                    itemCount: checkListItems.length,
-                    itemBuilder: (context, index) {
-                      ///each item in the list stored in 'item'
-                      final item = checkListItems[index];
-                      return ListTile(
-                        title: Text(item,style: AppTextTheme.bodyTextStyle,),
-                        trailing: IconButton(
+                  shrinkWrap: true,
+                  itemCount: checkListItems.length,
+                  itemBuilder: (context, index) {
+                    final item = checkListItems[index];
+                    return ListTile(
+                      title: Text(
+                        item,
+                        style: AppTextTheme.bodyTextStyle,
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
                             onPressed: () {
-                              setState(() {
-                                checkListItems.removeAt(index);
-                                _isChecked.removeAt(index);
-                              });
+                              _editCheckListItem(index);
+                            },
+                            icon: Icon(
+                              size: 25,
+                              Icons.edit,
+                              color: AppColor.basicTheme,
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              _deleteCheckListItem(index);
                             },
                             icon: Icon(
                               size: 25,
                               Icons.delete,
                               color: AppColor.basicTheme,
-                            )),
-                      );
-                    })
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
               ],
             ),
           ),
@@ -157,37 +189,41 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
           onPressed: () {
             var valid = formkey.currentState!.validate();
             if (valid == true) {
-              ///read all the datas from fileds and store it to title content checklist and ischecked
               String title = _titleController.text;
               String content = _contentController.text;
               final checklist =
-                  checkListItems.isNotEmpty ? checkListItems : null;
+              checkListItems.isNotEmpty ? checkListItems : null;
               final checked = _isChecked.isNotEmpty ? _isChecked : null;
 
-              /// pass the data from ui to model
               final note = Note(
-                  title: title,
-                  content: content,
-                  checkList: checklist,
-                  isCheckedList: checked);
+                title: title,
+                content: content,
+                checkList: checklist,
+                isCheckedList: checked,
+              );
 
-              /// add note to hive db
-              final id = HiveDb.addNote(note);
-
-              if (id != null) {
-                successSnackBar(context);
-                Navigator.pop(context);
-              }else{
-                errorSnackBar(context);
+              if (widget.note == null) {
+                final id = HiveDb.addNote(note);
+                if (id != null) {
+                  successSnackBar(context);
+                  Navigator.pop(context, true); // Pass true to indicate success
+                } else {
+                  errorSnackBar(context);
+                }
+              } else {
+                // Update the existing note
+                HiveDb.updateNote(widget.note!, () {
+                  // Refresh UI after updating the note
+                });
+                updateSuccessSnackBar(context);
+                Navigator.pop(context, note); // Pass updated note back
               }
             } else {
               warningSnackBar(context);
             }
-            _titleController.clear();
-            _contentController.clear();
           },
           label: Text(
-            "Add Note",
+            widget.note == null ? 'Add Note' : 'Update Note',
             style: AppTextTheme.appBarTextStyle,
           ),
           icon: Icon(
@@ -204,13 +240,55 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
   void _addCheckListItem(String checkListItem) {
     setState(() {
       if (checkListItem.trim().isNotEmpty) {
-        ///add the value that we entered in add item field to the list
         checkListItems.add(checkListItem.trim());
+        _addItemController.clear();
         _isChecked.add(false);
-
-        ///clear textfield after adding an item
         _addItemController.clear();
       }
     });
+  }
+
+  void _deleteCheckListItem(int index) {
+    setState(() {
+      checkListItems.removeAt(index);
+      setState(() {});
+      _isChecked.removeAt(index);
+    });
+  }
+
+  void _editCheckListItem(int index) {
+    String initialText = checkListItems[index];
+    showDialog(
+      context: context,
+      builder: (context) {
+        String newText = initialText;
+        return AlertDialog(
+          title: Text('Edit Checklist Item'),
+          content: TextField(
+            controller: TextEditingController(text: initialText),
+            onChanged: (value) {
+              newText = value;
+            },
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  checkListItems[index] = newText;
+                });
+                Navigator.pop(context);
+              },
+              child: Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

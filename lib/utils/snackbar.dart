@@ -29,3 +29,13 @@ errorSnackBar(context) => showTopSnackBar(
         textStyle: AppTextTheme.titleTextStyle,
       ),
     );
+
+updateSuccessSnackBar(context)=>showTopSnackBar(
+  Overlay.of(context),
+  CustomSnackBar.success(
+    backgroundColor: Colors.blue,
+    message: "✏️ Note Successfully Updated!!!",
+    textStyle: AppTextTheme.titleTextStyle,
+  ),
+);
+
