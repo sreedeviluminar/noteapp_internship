@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:noteapp_internship/model/note.dart';
 import 'package:noteapp_internship/utils/appcolors.dart';
 import 'package:noteapp_internship/utils/snackbar.dart';
+
 import '../database/db.dart';
 import '../utils/textConstants.dart';
 
