@@ -5,20 +5,17 @@ import 'package:noteapp_internship/utils/snackbar.dart';
 
 import '../database/db.dart';
 import '../utils/textConstants.dart';
-
 class AddNoteScreen extends StatefulWidget {
   final Note? note;
-
   AddNoteScreen({Key? key, this.note}) : super(key: key);
 
   @override
   State<AddNoteScreen> createState() => _AddNoteScreenState();
 }
-
 class _AddNoteScreenState extends State<AddNoteScreen> {
-  TextEditingController _titleController = TextEditingController();
-  TextEditingController _contentController = TextEditingController();
-  TextEditingController _addItemController = TextEditingController();
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _contentController = TextEditingController();
+  final TextEditingController _addItemController = TextEditingController();
 
   List<String> checkListItems = [];
   List<bool> _isChecked = [];
@@ -33,18 +30,19 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
       _contentController.text = widget.note!.content ?? '';
       if (widget.note!.checkList != null) {
         checkListItems.addAll(widget.note!.checkList!);
-        _isChecked = List<bool>.filled(widget.note!.checkList!.length, false);
+        _isChecked = List<bool>.filled(
+            widget.note!.checkList!.length, false);
       }
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColor.basicTheme,
         title: Text(
-          widget.note == null ? 'Add Your Notes' : 'Edit Your Note',
+          widget.note == null
+              ? 'Add Your Notes' : 'Edit Your Note',
           style: AppTextTheme.appBarTextStyle,
         ),
       ),
@@ -83,7 +81,7 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                 ),
                 TextFormField(
                   controller: _contentController,
-                  maxLines: 8,
+                  maxLines: 5,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     hintText: "Enter your Content",
@@ -207,7 +205,8 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                 final id = HiveDb.addNote(note);
                 if (id != null) {
                   successSnackBar(context);
-                  Navigator.pop(context, true); // Pass true to indicate success
+                  // Pass true to indicate success
+                  Navigator.pop(context, true);
                 } else {
                   errorSnackBar(context);
                 }
@@ -242,7 +241,7 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
     setState(() {
       if (checkListItem.trim().isNotEmpty) {
         checkListItems.add(checkListItem.trim());
-        _addItemController.clear();
+        //_addItemController.clear();
         _isChecked.add(false);
         _addItemController.clear();
       }
@@ -264,7 +263,7 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
       builder: (context) {
         String newText = initialText;
         return AlertDialog(
-          title: Text('Edit Checklist Item'),
+          title: const Text('Edit Checklist Item'),
           content: TextField(
             controller: TextEditingController(text: initialText),
             onChanged: (value) {
@@ -276,7 +275,7 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
@@ -285,7 +284,7 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                 });
                 Navigator.pop(context);
               },
-              child: Text('Save'),
+              child: const Text('Save'),
             ),
           ],
         );

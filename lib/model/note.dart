@@ -1,7 +1,5 @@
 import 'package:hive/hive.dart';
-
 part 'note.g.dart';
-
 @HiveType(typeId: 0)
 class Note {
   @HiveField(1)
@@ -19,8 +17,7 @@ class Note {
     required this.title,
     this.content,
     this.checkList,
-    this.isCheckedList,
-  }) {
+    this.isCheckedList}) {
     id = DateTime.now().microsecondsSinceEpoch;
   }
 }

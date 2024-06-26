@@ -5,14 +5,12 @@ import 'package:noteapp_internship/screens/note_details.dart';
 import 'package:noteapp_internship/utils/appcolors.dart';
 import 'package:noteapp_internship/utils/textConstants.dart';
 import 'package:hive/hive.dart';
-
 import '../model/note.dart';
 
 class NoteHome extends StatefulWidget {
   @override
   State<NoteHome> createState() => _NoteHomeState();
 }
-
 class _NoteHomeState extends State<NoteHome> {
   @override
   Widget build(BuildContext context) {
@@ -29,7 +27,8 @@ class _NoteHomeState extends State<NoteHome> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => AddNoteScreen()),
+            MaterialPageRoute(builder: (context) =>
+                AddNoteScreen()),
           );
         },
         child: Icon(
@@ -38,11 +37,12 @@ class _NoteHomeState extends State<NoteHome> {
           size: 30,
         ),
       ),
+      ///ValueListenableBuilder listen to the changes in the box
+      ///and rebuilds the body whenever an changes in box occurs
       body: ValueListenableBuilder<Box<Note>>(
         valueListenable: Hive.box<Note>('my_notes').listenable(),
         builder: (context, box, widget) {
           List<Note> notes = box.values.toList().cast<Note>();
-
           return ListView.builder(
             itemCount: notes.length,
             itemBuilder: (context, index) {
@@ -58,11 +58,11 @@ class _NoteHomeState extends State<NoteHome> {
                         BlendMode.dstATop,
                       ),
                       fit: BoxFit.cover,
-                      image: AssetImage("assets/images/back.jpg"),
+                      image: const AssetImage("assets/images/back.jpg"),
                     ),
                   ),
                   child: ListTile(
-                    leading: Icon(Icons.edit_note),
+                    leading: const Icon(Icons.edit_note),
                     title: Text(
                       "${notes[index].title}",
                       style: AppTextTheme.bodyTextStyle,
@@ -91,16 +91,15 @@ class _NoteHomeState extends State<NoteHome> {
       ),
     );
   }
-
   void _deleteNoteAtIndex(int id) {
     var box = Hive.box<Note>('my_notes');
-    int index = box.values.toList().indexWhere((note) => note.id == id);
+    int index = box.values.toList()
+        .indexWhere((note) => note.id == id);
     if (index != -1) {
       box.deleteAt(index);
       _refreshHome();
     }
   }
-
   void _refreshHome() {
     setState(() {});
   }
